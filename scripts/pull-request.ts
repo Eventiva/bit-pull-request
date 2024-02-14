@@ -2,31 +2,34 @@ import { exec, ExecOptions } from '@actions/exec'
 import { getOctokit } from '@actions/github'
 import * as core from '@actions/core'
 
+/**
+ *
+ */
 const createSnapMessageText = async (
   githubToken: string,
   repo: string,
   owner: string,
   prNumber: number
-): Promise<void> => {
+): Promise<string> => {
   const octokit = getOctokit(githubToken)
 
   let messageText = 'CI'
 
   const { data: pr } = await octokit.rest.pulls.get({
-    owner: owner,
-    repo: repo,
+    owner,
+    repo,
     pull_number: prNumber
   })
 
   const prTitle = pr.title
-  core.info('PR title: ' + prTitle)
+  core.info(`PR title: ${prTitle}`)
 
   if (prTitle) {
     messageText = prTitle
   } else {
     const { data: commits } = await octokit.rest.pulls.listCommits({
-      owner: owner,
-      repo: repo,
+      owner,
+      repo,
       pull_number: prNumber
     })
 
@@ -40,6 +43,9 @@ const createSnapMessageText = async (
   return messageText
 }
 
+/**
+ *
+ */
 const postOrUpdateComment = async (
   githubToken: string,
   repo: string,
@@ -48,7 +54,7 @@ const postOrUpdateComment = async (
   laneName: string
 ): Promise<void> => {
   const laneLink = `https://bit.cloud/${process.env.ORG}/${process.env.SCOPE}/~lane/${laneName}`
-  let commentIntro = `⚠️ Please review the changes in the Bit lane: ${laneLink}`
+  const commentIntro = `⚠️ Please review the changes in the Bit lane: ${laneLink}`
 
   const octokit = getOctokit(githubToken)
   const comments = await octokit.rest.issues.listComments({
@@ -82,7 +88,10 @@ const postOrUpdateComment = async (
   }
 }
 
-const getHumanReadableTimestamp = (): Promise<void> => {
+/**
+ *
+ */
+const getHumanReadableTimestamp = (): string => {
   const options = {
     year: 'numeric',
     month: 'long',
@@ -92,10 +101,14 @@ const getHumanReadableTimestamp = (): Promise<void> => {
     second: '2-digit',
     timeZone: 'UTC'
   }
+  const date = new Date().toLocaleString('en-US', options as any)
 
-  return new Date().toLocaleString('en-US', options as any) + ' UTC'
+  return `${date} UTC`
 }
 
+/**
+ *
+ */
 const run = async (
   githubToken: string,
   repo: string,
@@ -111,7 +124,7 @@ const run = async (
   const options: ExecOptions = {
     cwd: wsdir,
     listeners: {
-      stdout: (data: Buffer): Promise<void> => {
+      stdout: (data: Buffer) => {
         statusRaw += data.toString()
       }
     }

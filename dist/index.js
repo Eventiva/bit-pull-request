@@ -10944,23 +10944,26 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const exec_1 = __nccwpck_require__(1514);
 const github_1 = __nccwpck_require__(5438);
 const core = __importStar(__nccwpck_require__(2186));
+/**
+ *
+ */
 const createSnapMessageText = (githubToken, repo, owner, prNumber) => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = (0, github_1.getOctokit)(githubToken);
     let messageText = 'CI';
     const { data: pr } = yield octokit.rest.pulls.get({
-        owner: owner,
-        repo: repo,
+        owner,
+        repo,
         pull_number: prNumber
     });
     const prTitle = pr.title;
-    core.info('PR title: ' + prTitle);
+    core.info(`PR title: ${prTitle}`);
     if (prTitle) {
         messageText = prTitle;
     }
     else {
         const { data: commits } = yield octokit.rest.pulls.listCommits({
-            owner: owner,
-            repo: repo,
+            owner,
+            repo,
             pull_number: prNumber
         });
         if (commits.length > 0) {
@@ -10971,9 +10974,12 @@ const createSnapMessageText = (githubToken, repo, owner, prNumber) => __awaiter(
     core.info('Snap message Text: ' + messageText);
     return messageText;
 });
+/**
+ *
+ */
 const postOrUpdateComment = (githubToken, repo, owner, prNumber, laneName) => __awaiter(void 0, void 0, void 0, function* () {
     const laneLink = `https://bit.cloud/${process.env.ORG}/${process.env.SCOPE}/~lane/${laneName}`;
-    let commentIntro = `⚠️ Please review the changes in the Bit lane: ${laneLink}`;
+    const commentIntro = `⚠️ Please review the changes in the Bit lane: ${laneLink}`;
     const octokit = (0, github_1.getOctokit)(githubToken);
     const comments = yield octokit.rest.issues.listComments({
         owner,
@@ -11004,6 +11010,9 @@ const postOrUpdateComment = (githubToken, repo, owner, prNumber, laneName) => __
         });
     }
 });
+/**
+ *
+ */
 const getHumanReadableTimestamp = () => {
     const options = {
         year: 'numeric',
@@ -11014,8 +11023,12 @@ const getHumanReadableTimestamp = () => {
         second: '2-digit',
         timeZone: 'UTC'
     };
-    return new Date().toLocaleString('en-US', options) + ' UTC';
+    const date = new Date().toLocaleString('en-US', options);
+    return `${date} UTC`;
 };
+/**
+ *
+ */
 const run = (githubToken, repo, owner, prNumber, laneName, wsdir) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     const org = process.env.ORG;
