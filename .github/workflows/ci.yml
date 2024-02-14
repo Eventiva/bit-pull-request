@@ -66,6 +66,8 @@ jobs:
 
       - name: Bit Pull Request
         uses: ./
+        with: 
+          token: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Bit Lanes
         run: cd test-data && bit lane list --details
