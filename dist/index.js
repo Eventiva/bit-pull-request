@@ -10886,7 +10886,7 @@ try {
     const githubToken = process.env.GITHUB_TOKEN;
     const wsDir = process.env.WSDIR;
     const prNumber = (_b = (_a = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.number;
-    const { owner, repo } = github_1.context === null || github_1.context === void 0 ? void 0 : github_1.context.repo;
+    const { owner, repo } = github_1.context.repo;
     if (!githubToken) {
         throw new Error('GitHub token not found');
     }
@@ -10968,10 +10968,10 @@ const createSnapMessageText = (githubToken, repo, owner, prNumber) => __awaiter(
         });
         if (commits.length > 0) {
             messageText = commits[commits.length - 1].commit.message;
-            core.info('Last commit message: ' + messageText);
+            core.info(`Last commit message: ${messageText}`);
         }
     }
-    core.info('Snap message Text: ' + messageText);
+    core.info(`Snap message Text: ${messageText}`);
     return messageText;
 });
 /**

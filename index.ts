@@ -6,7 +6,7 @@ try {
   const githubToken = process.env.GITHUB_TOKEN
   const wsDir: string = process.env.WSDIR!
   const prNumber = context?.payload?.pull_request?.number
-  const { owner, repo } = context?.repo
+  const { owner, repo } = context.repo
 
   if (!githubToken) {
     throw new Error('GitHub token not found')

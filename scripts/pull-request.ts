@@ -35,11 +35,11 @@ const createSnapMessageText = async (
 
     if (commits.length > 0) {
       messageText = commits[commits.length - 1].commit.message
-      core.info('Last commit message: ' + messageText)
+      core.info(`Last commit message: ${messageText}`)
     }
   }
 
-  core.info('Snap message Text: ' + messageText)
+  core.info(`Snap message Text: ${messageText}`)
   return messageText
 }
 
@@ -92,7 +92,7 @@ const postOrUpdateComment = async (
  *
  */
 const getHumanReadableTimestamp = (): string => {
-  const options = {
+  const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -101,7 +101,7 @@ const getHumanReadableTimestamp = (): string => {
     second: '2-digit',
     timeZone: 'UTC'
   }
-  const date = new Date().toLocaleString('en-US', options as any)
+  const date = new Date().toLocaleString('en-US', options)
 
   return `${date} UTC`
 }
